@@ -1,0 +1,246 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Aryavarta Siddhanta Sanrakshaka Trust</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" 
+        content="Access, download and read free e‑books on Sanskrit, Vedic texts and Indian philosophy. Browse our curated library of Upanishads, Yogashastra, Smritis and more—all in PDF format for on‑site reading or offline download." />
+  <meta name="keywords" 
+        content="e‑book, PDF download, read online, Sanskrit texts, Vedic literature, Upanishad PDFs, Yoga Shastra, Indian philosophy, free e‑books, digital library" />
+
+  <style>
+    /* reset + full‐screen */
+    html, body {
+      margin: 0; padding: 0;
+      height: 100%; overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+
+    /* header */
+    header {
+      height: 50px; line-height: 50px;
+      padding: 0 20px;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; align-items: center;
+      z-index: 2;
+    }
+    header a { color: inherit; text-decoration: none; }
+    header h2 { margin: 0 0 0 10px; font-size: 1.2rem; }
+
+    /* main container below header */
+    .container {
+      display: flex;
+      height: calc(100% - 50px);
+      margin-top: 50px;
+    }
+
+    /* left list */
+    #pdfList {
+      width: 300px;
+      background: #fff;
+      list-style: none;
+      padding: 10px;
+      margin: 0;
+      border-right: 1px solid #ddd;
+      overflow-y: auto;
+    }
+    #pdfList li {
+      background: #fff;
+      margin-bottom: 8px;
+      padding: 8px 10px;
+      border-radius: 4px;
+      display: flex; align-items: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: background .2s;
+    }
+    #pdfList li:hover { background: #e8f0fe; }
+    #pdfList .title { flex: 1; font-size: .95rem; }
+
+    /* right viewer */
+    .pdf-viewer {
+      flex: 1;
+      position: relative;
+      background: #000;
+    }
+
+    /* placeholder message */
+    #placeholder {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: #888;
+      font-size: 1rem;
+      text-align: center;
+      padding: 0 20px;
+      line-height: 1.4;
+    }
+
+    /* actual PDF container hidden initially */
+    #pdfViewerContainer {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: none;
+      flex-direction: column;
+    }
+    iframe {
+      width: 100%; height: 100%; border: none;
+    }
+    .download-btn {
+      position: absolute; bottom: 10px; right: 10px;
+      padding: 6px 10px;
+      background: #007bff; color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: .9rem;
+      z-index: 1;
+    }
+
+    /* mobile adjustments */
+    @media (max-width: 767px) {
+      .container { flex-direction: column; }
+      #pdfList { width: 100%; border-right: none; }
+      #pdfViewerContainer { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html"><img src="images/logo.png" alt="Home" style="height: 60px;padding-top: 20px;"></a>
+    <h2>📚 PDF Library</h2>
+  </header>
+
+  <div class="container">
+    <ul id="pdfList"></ul>
+
+    <div class="pdf-viewer">
+      <div id="placeholder">
+        Click on a PDF file from the list to display it here.
+      </div>
+      <div id="pdfViewerContainer">
+        <iframe id="pdfIframe"></iframe>
+        <a id="downloadBtn" class="download-btn" href="#" target="_blank">
+          ⬇️ Download
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const pdfFiles = [
+				{
+				"title": "Siddha Siddhanta Paddhati-Gorakh Nath Mandir",
+				"fileId": "1VlgwRXKo-CXm9YWZQ0z3pYZ9Avg6nE5R"
+				},
+				{
+				"title": "Yoga Darshan Vyasbhasya Sutratha sahit",
+				"fileId": "1GzCgwH71TQdZxxk2tSo8jr9JYYaFwQ5_"
+				},
+				{
+				"title": "Ishopanishad",
+				"fileId": "1gM3VV9XY6t4dmjQiT6A8Kqihzk5_TyIG"
+				},
+				{
+				"title": "Ayetrayopanishad",
+				"fileId": "107OZSht0UYQ5rjGOmHR50m4zoBjS8_OW"
+				},
+				{
+				"title": "Kathopanishad",
+				"fileId": "1U7UZAWxegpFBEQMaMSumABKWS1PWuY-B"
+				},
+				{
+				"title": "Goraksha-Samhita Prathamo Bhaga",
+				"fileId": "1wHJyQvv8q9giPH7DhdBOnnUEkq2XJYPo"
+				},
+				{
+				"title": "Ghrenda samhita",
+				"fileId": "1s0NMRRhNg_46KXKpxDcu35sDiQ3iz5P6"
+				},
+				{
+				"title": "Ghrenda Samhita - Datia Swami",
+				"fileId": "1uXGekvTWUddNERE8fsB3ROeL8uj7c23d"
+				},
+				{
+				"title": "Chhandogya Upanishad",
+				"fileId": "1vO_GSWOY2qSksmiAE_eXQksSQUjhYEVu"
+				},
+				{
+				"title": "Prashnopanishad",
+				"fileId": "1PmQMSE-iYU4slRG_sA51Z_QtpbygVPBi"
+				},
+				{
+				"title": "Brihadarankopanishad",
+				"fileId": "1202oRTSubeLhlcCefkgYt3c01n2jZncC"
+				},
+				{
+				"title": "Mundakopanishad",
+				"fileId": "1hrj7ivFLZpw0bFMmgzk-OCvAUGbul3Ea"
+				},
+				{
+				"title": "Yoga darshan Prayogika Parikshadrishti",
+				"fileId": "1X5Z-exB9xCesJ6TH8TpOfFZHlLKqzPHS"
+				},
+				{
+				"title": "Yogabeejam",
+				"fileId": "1Ic61pytB-tEp3v2U3hTffOgFZ9n_TLNP"
+				},
+				{
+				"title": "Shiva svarodaya",
+				"fileId": "1KoT9256nYwTMlHPbbF4o-YiL4dtEe14x"
+				},
+				{
+				"title": "Shiva Samhita",
+				"fileId": "1ym-YcErpEYDGJjnCSpe16FL_g4739yFw"
+				},
+				{
+				"title": "Sad-darshana",
+				"fileId": "1ZIX2TrbXFmoNlZDGMyWC3tRRiGga52_0"
+				},
+				{
+				"title": "Hath-Pradipika",
+				"fileId": "1kqtGmgE8udZhnTFHvxtlkOl6QvvTWujx"
+				},
+				{
+				"title": "Hathyoga-pradipika",
+				"fileId": "1-mbm1xumrV6WW2-ZJqWspXf5bjP0ElJb"
+				}
+			];
+
+    const listEl         = document.getElementById("pdfList");
+    const placeholder    = document.getElementById("placeholder");
+    const viewerCont     = document.getElementById("pdfViewerContainer");
+    const iframeEl       = document.getElementById("pdfIframe");
+    const downloadBtn    = document.getElementById("downloadBtn");
+
+    pdfFiles.forEach(pdf => {
+      const previewURL  = `https://drive.google.com/file/d/${pdf.fileId}/preview`;
+      const downloadURL = `https://drive.google.com/uc?export=download&id=${pdf.fileId}`;
+
+      const li   = document.createElement("li");
+      const span = document.createElement("span");
+      span.className = "title";
+      span.textContent = pdf.title;
+      li.appendChild(span);
+
+      li.addEventListener("click", () => {
+        // hide placeholder, show PDF viewer
+        placeholder.style.display    = "none";
+        viewerCont.style.display     = "flex";
+
+        // set PDF
+        iframeEl.src      = previewURL;
+        downloadBtn.href  = downloadURL;
+      });
+
+      listEl.appendChild(li);
+    });
+  </script>
+
+</body>
+</html>
